@@ -56,14 +56,21 @@ export const generateBucketList = async (userProfile: UserProfile): Promise<{ th
     - Age: ${userProfile.age}
     - Life Dream: "${userProfile.dream}"
     - Selected Vibe/Personality: "${userProfile.vibe}"
-    - Assets: "${userProfile.assets}"
+    - Assets/Financial Status: "${userProfile.assets}"
 
     Task:
-    1. Analyze the user's profile, dream, and **Selected Vibe**. Generate a unique, creative "Life Theme" or "Persona" title that specifically reflects their chosen vibe of "${userProfile.vibe}".
-    2. Write a short, witty, inspiring description of this theme.
-    3. **Write a vivid, artistic image generation prompt for this theme** (describe a scene that represents this persona abstractly or metaphorically, e.g., "A digital painting of a person standing on a mountain looking at a nebula").
-    4. Generate 5 creative, personalized bucket list items aligned with this theme and vibe.
-    5. **For each item, write a specific image generation prompt** (e.g., "A cinematic shot of someone skydiving over a beach").
+    1. **Persona Generation**: Analyze the user's profile, dream, and **Selected Vibe**. Generate a unique, creative "Life Theme" or "Persona" title.
+    2. **Theme Description**: Write a short, witty, inspiring description of this theme that acknowledges their current stage in life (${userProfile.age} years old).
+    3. **Theme Image Prompt**: Write a vivid, artistic image generation prompt for this theme (describe a scene that represents this persona abstractly or metaphorically).
+    4. **Bucket List Generation**: Generate 5 creative, personalized bucket list items.
+       
+       **CRITICAL PERSONALIZATION RULES**:
+       - **Integrate the Dream**: The items must functionally or thematically help achieve their specific "Life Dream": "${userProfile.dream}".
+       - **Age Appropriate**: For age ${userProfile.age}, suggest items that are ${userProfile.age > 60 ? "meaningful, legacy-focused, or comfortably adventurous" : "ambitious, growth-oriented, or high-energy"}.
+       - **Financial Reality**: User has "${userProfile.assets}". Ensure items fit this financial tier (e.g., if wealthy, suggest philanthropy or luxury travel; if modest, suggest creativity and local adventure).
+       - **Vibe Alignment**: Filter all suggestions through the "${userProfile.vibe}" lens.
+
+    5. **Item Image Prompts**: For each item, write a specific image generation prompt.
     
     Return pure JSON.
   `;

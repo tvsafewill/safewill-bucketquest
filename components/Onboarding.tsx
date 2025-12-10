@@ -153,7 +153,9 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                <label className="block text-lg font-medium text-slate-700 mb-2">
                  What do you want to do with the rest of your life?
                </label>
-               <p className="text-sm text-slate-500 mb-3">Don't overthink it. Be silly, be serious, be you. We'll use this and your "{selectedVibe}" vibe to generate your list.</p>
+               <p className="text-sm text-slate-500 mb-3">
+                 We'll combine this with your age ({age}), assets, and "{selectedVibe}" vibe to generate a perfectly personalized quest.
+               </p>
                <textarea 
                  value={dream}
                  onChange={(e) => setDream(e.target.value)}
