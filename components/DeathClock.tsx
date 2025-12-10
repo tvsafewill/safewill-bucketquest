@@ -70,8 +70,8 @@ const DeathClock: React.FC<DeathClockProps> = ({ age, compact = false }) => {
         {timeLeft.minutes}<span className="text-sm text-slate-400 font-sans mx-1">m</span>
         {timeLeft.seconds}<span className="text-sm text-slate-400 font-sans mx-1">s</span>
       </div>
-      <p className="text-xs text-slate-400 mt-3">
-        Based on avg expectancy ({LIFE_EXPECTANCY}y). Every second counts.
+      <p className="text-xs text-red-600 mt-3 font-bold">
+        The Reaper just started his car. PANIC ACCORDINGLY! 🏎️💀
       </p>
     </div>
   );

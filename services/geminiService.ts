@@ -1,11 +1,20 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { UserProfile, BucketItem } from "../types";
 
-// Initialize Gemini Client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Helper to get client safely. 
+// We do not initialize globally to prevent app crash if API_KEY is missing.
+const getAiClient = () => {
+  const apiKey = process.env.API_KEY;
+  // If no key is found, we return null. The calling functions will handle this by falling back to mock data.
+  if (!apiKey) return null;
+  return new GoogleGenAI({ apiKey });
+};
 
 // Helper to generate a single image
 const generateImage = async (prompt: string): Promise<string | undefined> => {
+  const ai = getAiClient();
+  if (!ai) return undefined;
+
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
@@ -30,7 +39,14 @@ const generateImage = async (prompt: string): Promise<string | undefined> => {
 };
 
 export const generateBucketList = async (userProfile: UserProfile): Promise<{ themeTitle: string, themeDescription: string, themeImage?: string, items: BucketItem[] }> => {
+  const ai = getAiClient();
   const modelId = "gemini-2.5-flash"; 
+
+  // If no API key, immediately throw to trigger fallback
+  if (!ai) {
+    console.warn("API Key is missing. Using fallback data.");
+    return getFallbackData();
+  }
 
   const prompt = `
     You are a creative Gamemaster for "Safewill BucketQuest", a gamified legacy planning app.
@@ -93,8 +109,6 @@ export const generateBucketList = async (userProfile: UserProfile): Promise<{ th
     const data = JSON.parse(text);
     
     // 2. Generate Images in Parallel
-    // We limit concurrency slightly or just fire them all since it's a demo and usually < 10 items.
-    
     const themeImagePromise = generateImage(data.themeImagePrompt);
     
     const itemsWithImagesPromise = Promise.all(data.items.map(async (item: any) => {
@@ -117,29 +131,40 @@ export const generateBucketList = async (userProfile: UserProfile): Promise<{ th
 
   } catch (error) {
     console.error("Error generating bucket list:", error);
-    return {
-      themeTitle: "The Mystery Explorer",
-      themeDescription: "The stars were cloudy, but your journey is just beginning. Make it count.",
-      items: [
-        {
-          id: "fallback-1",
-          title: "Visit the Moon",
-          description: "Because why stay grounded? (API Error Fallback)",
-          difficulty: "Legendary",
-          partnerName: "Virgin Galactic",
-          partnerCategory: "Adventure",
-          completed: false
-        },
-        {
-          id: "fallback-2",
-          title: "Organize the Garage",
-          description: "The final frontier of domestic life.",
-          difficulty: "Hard",
-          partnerName: "Howard's Storage",
-          partnerCategory: "Wellness",
-          completed: false
-        }
-      ]
-    };
+    return getFallbackData();
   }
 };
+
+const getFallbackData = () => ({
+  themeTitle: "The Unbound Explorer",
+  themeDescription: "Your API key might be missing, but your spirit isn't. Here is a demo quest to get you started!",
+  items: [
+    {
+      id: "fallback-1",
+      title: "Configure API Key",
+      description: "Get your Gemini API Key from Google AI Studio and add it to your environment variables.",
+      difficulty: "Easy" as const,
+      partnerName: "Google Cloud",
+      partnerCategory: "Legacy" as const,
+      completed: false
+    },
+    {
+      id: "fallback-2",
+      title: "Visit the Moon",
+      description: "Because why stay grounded? (Demo Mode)",
+      difficulty: "Legendary" as const,
+      partnerName: "Virgin Galactic",
+      partnerCategory: "Adventure" as const,
+      completed: false
+    },
+    {
+      id: "fallback-3",
+      title: "Organize the Garage",
+      description: "The final frontier of domestic life.",
+      difficulty: "Hard" as const,
+      partnerName: "Howard's Storage",
+      partnerCategory: "Wellness" as const,
+      completed: false
+    }
+  ]
+});

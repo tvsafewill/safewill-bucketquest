@@ -38,20 +38,6 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-teal-200 selection:text-teal-900">
-      <nav className="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-           <div className="flex items-center gap-2">
-             <div className="bg-safewill-navy h-8 w-8 rounded flex items-center justify-center text-white font-serif font-bold text-lg">S</div>
-             <span className="font-bold text-safewill-navy text-xl tracking-tight hidden md:block">Safewill</span>
-           </div>
-           {userProfile && (
-             <div className="text-sm font-medium text-slate-500">
-               {currentScreen === 'progress' ? 'Mode: Living Life' : 'Mode: Planning'}
-             </div>
-           )}
-        </div>
-      </nav>
-
       <main className="py-8">
         {currentScreen === 'onboarding' && (
           <Onboarding onComplete={handleOnboardingComplete} />
